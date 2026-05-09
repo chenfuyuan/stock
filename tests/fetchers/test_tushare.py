@@ -44,3 +44,39 @@ def test_fetch_tushare_stock_data_isolates_field_failures_without_exception_text
     assert record["fina_indicator"] == []
     assert record["missing_fields"] == ["fina_indicator"]
     assert "secret-token" not in str(record)
+
+
+def test_fetch_tushare_stock_data_limits_daily_to_recent_year():
+    class WindowedClient(FakeTushareClient):
+        def daily(self, ts_code):
+            return pd.DataFrame(
+                [
+                    {"ts_code": ts_code, "trade_date": "20240101", "close": 9.0},
+                    {"ts_code": ts_code, "trade_date": "20250601", "close": 10.0},
+                    {"ts_code": ts_code, "trade_date": "20260101", "close": 11.0},
+                ]
+            )
+
+    record = fetch_tushare_stock_data(WindowedClient(), "000697.XSHE", "2026-05-10")
+    trade_dates = [row["trade_date"] for row in record["daily"]]
+    assert "20240101" not in trade_dates
+    assert "20250601" in trade_dates
+    assert "20260101" in trade_dates
+
+
+def test_fetch_tushare_stock_data_keeps_full_fina_indicator_history():
+    class FullFinaClient(FakeTushareClient):
+        def fina_indicator(self, ts_code):
+            return pd.DataFrame(
+                [
+                    {"ts_code": ts_code, "end_date": "20210331", "roe": 1.0},
+                    {"ts_code": ts_code, "end_date": "20220331", "roe": 2.0},
+                    {"ts_code": ts_code, "end_date": "20230331", "roe": 3.0},
+                    {"ts_code": ts_code, "end_date": "20240331", "roe": 4.0},
+                    {"ts_code": ts_code, "end_date": "20250331", "roe": 5.0},
+                ]
+            )
+
+    record = fetch_tushare_stock_data(FullFinaClient(), "000697.XSHE", "2026-05-10")
+    end_dates = [row["end_date"] for row in record["fina_indicator"]]
+    assert end_dates == ["20210331", "20220331", "20230331", "20240331", "20250331"]

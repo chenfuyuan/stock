@@ -1,0 +1,28 @@
+{
+  "raw_path": "stock/<YYYY-MM-DD>/data/<code>.json",
+  "generated_at": "<UTC ISO 时间戳>",
+  "stock": {"name": "<股票名>", "code": "<规范代码>"},
+  "data_date": "<YYYY-MM-DD>",
+  "fetched_at": "<UTC ISO 时间戳>",
+  "tushare_status": "ok | skipped:no_token | unavailable:<异常类型>",
+  "missing_fields": ["<source>:<field>", "..."],
+  "tushare": {
+    "source": "tushare",
+    "code": "<规范代码>",
+    "data_date": "<YYYY-MM-DD>",
+    "missing_fields": ["<field>", "..."],
+    "stock_basic": ["<行记录>"],
+    "daily_basic": ["<行记录>"],
+    "daily": ["<最近一年内的日频行情>"],
+    "fina_indicator_recent": ["<按 end_date 倒序最近 N 期>"]
+  },
+  "akshare": {
+    "source": "akshare",
+    "code": "<规范代码>",
+    "data_date": "<YYYY-MM-DD>",
+    "missing_fields": ["<field>", "..."],
+    "individual_info": ["<行记录>"],
+    "hist": ["<最近一年内的日频行情>"],
+    "fund_flow": ["<最近一年内的资金流>"]
+  }
+}

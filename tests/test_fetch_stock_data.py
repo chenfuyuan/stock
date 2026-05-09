@@ -56,6 +56,28 @@ def test_fetch_stock_data_does_not_write_token_from_exception_text(tmp_path):
     assert "RuntimeError" in text
 
 
+def test_fetch_stock_data_also_writes_evidence_pack_pointing_at_raw(tmp_path):
+    def akshare_fetcher(code, date):
+        return {"source": "akshare", "code": code, "data_date": date, "missing_fields": []}
+
+    summary = fetch_stock_data(
+        [STOCK],
+        "2026-05-10",
+        tmp_path,
+        token=None,
+        tushare_fetcher=None,
+        akshare_fetcher=akshare_fetcher,
+    )
+
+    raw_path = tmp_path / "stock" / "2026-05-10" / "data" / "000697.XSHE.json"
+    evidence_path = tmp_path / "stock" / "2026-05-10" / "evidence" / "000697.XSHE.json"
+    assert evidence_path.exists()
+    assert summary["evidence"] == [str(evidence_path)]
+    pack = json.loads(evidence_path.read_text(encoding="utf-8"))
+    assert pack["raw_path"] == str(raw_path)
+    assert pack["data_date"] == "2026-05-10"
+
+
 def test_fetch_stock_data_cli_reads_stdin_and_writes_summary(tmp_path, monkeypatch):
     monkeypatch.setenv("TUSHARE_TOKEN", "")
     result = subprocess.run(

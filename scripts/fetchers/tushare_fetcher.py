@@ -1,4 +1,5 @@
 from scripts.parse_stock_list import to_tushare_code
+from scripts.windowing import apply_recent_year_window
 
 
 def fetch_tushare_stock_data(client, code: str, data_date: str) -> dict:
@@ -21,4 +22,5 @@ def fetch_tushare_stock_data(client, code: str, data_date: str) -> dict:
         except Exception:
             record[field] = []
             record["missing_fields"].append(field)
+    record["daily"] = apply_recent_year_window(record["daily"], "trade_date", data_date)
     return record

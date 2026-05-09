@@ -4,6 +4,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from scripts.build_evidence_pack import write_evidence_pack
 from scripts.config import get_tushare_token
 from scripts.fetchers.akshare_fetcher import fetch_akshare_stock_data
 from scripts.fetchers.tushare_fetcher import fetch_tushare_stock_data
@@ -19,8 +20,9 @@ def fetch_stock_data(
 ) -> dict:
     root = Path(root)
     data_dir = root / "stock" / date / "data"
+    evidence_dir = root / "stock" / date / "evidence"
     data_dir.mkdir(parents=True, exist_ok=True)
-    summary = {"date": date, "written": []}
+    summary = {"date": date, "written": [], "evidence": []}
 
     for stock in stocks:
         tushare_record = None
@@ -55,6 +57,8 @@ def fetch_stock_data(
         path = data_dir / f"{stock['code']}.json"
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
         summary["written"].append(str(path))
+        evidence_path = write_evidence_pack(path, evidence_dir)
+        summary["evidence"].append(str(evidence_path))
     return summary
 
 

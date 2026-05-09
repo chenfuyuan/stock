@@ -1,15 +1,4 @@
-## ADDED Requirements
-
-### Requirement: 读取本地 Tushare token
-系统 SHALL 从项目根目录 `.env` 或环境变量 `TUSHARE_TOKEN` 读取 Tushare token；当两者均不存在时返回无 token 状态。
-
-#### Scenario: `.env` 优先于环境变量
-- **WHEN** `.env` 中存在 `TUSHARE_TOKEN=from-dotenv` 且环境变量中存在 `TUSHARE_TOKEN=from-env-var`
-- **THEN** token 读取结果 MUST 为 `from-dotenv`
-
-#### Scenario: token 缺失
-- **WHEN** `.env` 与环境变量均未提供 `TUSHARE_TOKEN`
-- **THEN** token 读取结果 MUST 为 `None`
+## MODIFIED Requirements
 
 ### Requirement: 获取 Tushare 结构化底稿
 系统 SHALL 使用规范股票代码转换后的 Tushare 代码获取股票基础信息、最近一年行情、估值指标和完整财务指标，并在单个接口失败时记录缺失字段而不中断整只股票的数据记录。

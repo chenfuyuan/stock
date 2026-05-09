@@ -21,8 +21,10 @@ Users usually provide stock names and A-share codes such as `炼石航空(000697
    `python -m scripts.fetch_stock_data --date <YYYY-MM-DD>`
    - Pipe the same parsed JSON list into stdin.
    - Tushare is preferred when `TUSHARE_TOKEN` is available; akshare is always supplemental.
+   - The script writes raw JSON under `stock/<date>/data/<code>.json` and a derived Evidence Pack under `stock/<date>/evidence/<code>.json`. Raw JSON is for audit, recalculation, and necessary deep checks only — do not pipe it into prompts by default.
+   - Evidence Pack regeneration without re-fetching: `python -m scripts.build_evidence_pack --date <YYYY-MM-DD>`.
    - Structured data is a draft only and never replaces current web research.
-5. Read existing company profiles, daily report files, summary files, and `stock/<date>/data/<code>.json`.
+5. Read existing company profiles, daily report files, summary files, and `stock/<date>/evidence/<code>.json` (the default Evidence Pack input). Open `stock/<date>/data/<code>.json` only when an audit, recalculation, or deeper verification is required.
 6. Perform current web research for announcements, exchange filings, regulator/government policy, company IR, mainstream financial media, reliable data platforms, and industry context.
 7. Classify every source and current fact before using it in conclusions.
 8. Write each stock daily report with conclusions first and a clear source list.
@@ -69,7 +71,7 @@ Reports are research opinions only. Do not provide specific buy prices, sell pri
 
 Before completion, verify:
 
-- File completeness: every stock has a company profile and daily report; the daily directory has `index.md`, `股票池排序.md`, `主题行业综述.md`, `研究日志.md`, and `data/` JSON drafts.
+- File completeness: every stock has a company profile and daily report; the daily directory has `index.md`, `股票池排序.md`, `主题行业综述.md`, `研究日志.md`, raw JSON drafts under `data/`, and Evidence Packs under `evidence/`.
 - Source completeness: every current fact has a source grade and data date or retrieval time; every daily report has a source list.
 - Conclusion boundary: no core conclusion relies only on C-level or unconfirmed sources.
 - Investment boundary: no specific buy/sell price, take-profit/stop-loss level, or position sizing advice appears in reports or summaries.

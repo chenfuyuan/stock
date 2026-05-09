@@ -1,0 +1,23 @@
+{
+  "stock": {
+    "name": "甘肃能源",
+    "code": "000791.XSHE"
+  },
+  "fetched_at": "2026-05-10T03:00:00+00:00",
+  "tushare_status": "skipped:no_token",
+  "tushare": null,
+  "akshare": {
+    "source": "akshare",
+    "code": "000791.XSHE",
+    "data_date": "2026-05-10",
+    "missing_fields": ["fund_flow"],
+    "hist": [
+      {"代码": "000791", "日期": "2026-04-01", "收盘": 5.0}
+    ],
+    "individual_info": [
+      {"item": "股票简称", "value": "甘肃能源"}
+    ],
+    "fund_flow": []
+  },
+  "missing_fields": ["akshare:fund_flow"]
+}
