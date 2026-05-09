@@ -3,6 +3,8 @@
 !.env.example
 .claude/settings.local.json
 .idea/
+.venv/
 __pycache__/
+.pytest_cache/
 *.py[cod]
 .DS_Store
