@@ -4,6 +4,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from scripts.config import get_vault_root
 from scripts.windowing import apply_recent_year_window
 
 _FINA_LATEST_PERIODS = 4
@@ -95,8 +96,9 @@ def main() -> None:
     parser.add_argument("--root", default=".")
     args = parser.parse_args()
     root = Path(args.root)
-    raw_dir = root / "stock" / args.date / "data"
-    evidence_dir = root / "stock" / args.date / "evidence"
+    vault = get_vault_root(root)
+    raw_dir = vault / "stock" / args.date / "data"
+    evidence_dir = vault / "stock" / args.date / "evidence"
     summary = {"date": args.date, "evidence": []}
     for raw_path in sorted(raw_dir.glob("*.json")):
         out_path = write_evidence_pack(raw_path, evidence_dir)

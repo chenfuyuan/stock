@@ -11,7 +11,7 @@ This project is an A-share deep research and Obsidian knowledge base workflow.
 - Tushare/akshare data is a structured draft only; it does not replace current web search for announcements, news, policy, industry context, or market narratives.
 - All current facts must include a data date or retrieval time.
 - Reports are research opinions only. Do not provide specific buy prices, sell prices, take-profit/stop-loss levels, or position sizing advice.
-- Write outputs to `companies/` and `stock/YYYY-MM-DD/`.
+- Write outputs to `vault/companies/` and `vault/stock/YYYY-MM-DD/`.
 - Reports must be Obsidian-friendly: YAML frontmatter, tags, wikilinks, backlinks, clear headings, and conclusions first.
 - Never commit tokens, `.env`, or local configuration.
 

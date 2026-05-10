@@ -19,7 +19,7 @@ def test_fetch_stock_data_writes_combined_json_with_prefixed_missing_fields(tmp_
 
     summary = fetch_stock_data([STOCK], "2026-05-10", tmp_path, token=TOKEN, tushare_fetcher=tushare_fetcher, akshare_fetcher=akshare_fetcher)
 
-    output_path = tmp_path / "stock" / "2026-05-10" / "data" / "000697.XSHE.json"
+    output_path = tmp_path / "vault" / "stock" / "2026-05-10" / "data" / "000697.XSHE.json"
     payload = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["stock"] == STOCK
     assert payload["tushare_status"] == "ok"
@@ -35,7 +35,7 @@ def test_fetch_stock_data_skips_tushare_without_token_and_still_runs_akshare(tmp
 
     fetch_stock_data([STOCK], "2026-05-10", tmp_path, token=None, tushare_fetcher=None, akshare_fetcher=akshare_fetcher)
 
-    payload = json.loads((tmp_path / "stock" / "2026-05-10" / "data" / "000697.XSHE.json").read_text(encoding="utf-8"))
+    payload = json.loads((tmp_path / "vault" / "stock" / "2026-05-10" / "data" / "000697.XSHE.json").read_text(encoding="utf-8"))
     assert payload["tushare_status"] == "skipped:no_token"
     assert payload["tushare"] is None
     assert payload["akshare"]["source"] == "akshare"
@@ -50,7 +50,7 @@ def test_fetch_stock_data_does_not_write_token_from_exception_text(tmp_path):
 
     fetch_stock_data([STOCK], "2026-05-10", tmp_path, token=TOKEN, tushare_fetcher=tushare_fetcher, akshare_fetcher=akshare_fetcher)
 
-    text = (tmp_path / "stock" / "2026-05-10" / "data" / "000697.XSHE.json").read_text(encoding="utf-8")
+    text = (tmp_path / "vault" / "stock" / "2026-05-10" / "data" / "000697.XSHE.json").read_text(encoding="utf-8")
     assert TOKEN not in text
     assert "failed with" not in text
     assert "RuntimeError" in text
@@ -69,8 +69,8 @@ def test_fetch_stock_data_also_writes_evidence_pack_pointing_at_raw(tmp_path):
         akshare_fetcher=akshare_fetcher,
     )
 
-    raw_path = tmp_path / "stock" / "2026-05-10" / "data" / "000697.XSHE.json"
-    evidence_path = tmp_path / "stock" / "2026-05-10" / "evidence" / "000697.XSHE.json"
+    raw_path = tmp_path / "vault" / "stock" / "2026-05-10" / "data" / "000697.XSHE.json"
+    evidence_path = tmp_path / "vault" / "stock" / "2026-05-10" / "evidence" / "000697.XSHE.json"
     assert evidence_path.exists()
     assert summary["evidence"] == [str(evidence_path)]
     pack = json.loads(evidence_path.read_text(encoding="utf-8"))
@@ -90,4 +90,4 @@ def test_fetch_stock_data_cli_reads_stdin_and_writes_summary(tmp_path, monkeypat
 
     summary = json.loads(result.stdout)
     assert summary["date"] == "2026-05-10"
-    assert summary["written"] == [str(tmp_path / "stock" / "2026-05-10" / "data" / "000697.XSHE.json")]
+    assert summary["written"] == [str(tmp_path / "vault" / "stock" / "2026-05-10" / "data" / "000697.XSHE.json")]

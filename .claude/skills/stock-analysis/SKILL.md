@@ -21,10 +21,10 @@ Users usually provide stock names and A-share codes such as `炼石航空(000697
    `python -m scripts.fetch_stock_data --date <YYYY-MM-DD>`
    - Pipe the same parsed JSON list into stdin.
    - Tushare is preferred when `TUSHARE_TOKEN` is available; akshare is always supplemental.
-   - The script writes raw JSON under `stock/<date>/data/<code>.json` and a derived Evidence Pack under `stock/<date>/evidence/<code>.json`. Raw JSON is for audit, recalculation, and necessary deep checks only — do not pipe it into prompts by default.
+   - The script writes raw JSON under `vault/stock/<date>/data/<code>.json` and a derived Evidence Pack under `vault/stock/<date>/evidence/<code>.json`. Raw JSON is for audit, recalculation, and necessary deep checks only — do not pipe it into prompts by default.
    - Evidence Pack regeneration without re-fetching: `python -m scripts.build_evidence_pack --date <YYYY-MM-DD>`.
    - Structured data is a draft only and never replaces current web research.
-5. Read existing company profiles, daily report files, summary files, and `stock/<date>/evidence/<code>.json` (the default Evidence Pack input). Open `stock/<date>/data/<code>.json` only when an audit, recalculation, or deeper verification is required.
+5. Read existing company profiles, daily report files, summary files, and `vault/stock/<date>/evidence/<code>.json` (the default Evidence Pack input). Open `vault/stock/<date>/data/<code>.json` only when an audit, recalculation, or deeper verification is required.
 6. Perform current web research for announcements, exchange filings, regulator/government policy, company IR, mainstream financial media, reliable data platforms, and industry context.
 7. Classify every source and current fact before using it in conclusions.
 8. Write each stock daily report with conclusions first and a clear source list.

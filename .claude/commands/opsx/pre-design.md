@@ -133,11 +133,30 @@ tags: [workflow, artifacts, planning, experimental]
 
 **创建或复用 change**：
 
-- 路径：`openspec/changes/<type>-<topic>/`
-- `type ∈ {feature, fix, refactor, research, docs}`
-- `topic` 用 kebab-case，只表达主题，不塞实现细节
-- 通过 OpenSpec CLI 创建，确保 `.openspec.yaml` 存在
-- 已有**明确匹配**的非归档 change 可复用（主题、目标、范围都对齐，不是表面相似）；多候选时停下问用户
+命名硬约束（OpenSpec CLI 强制）：
+
+- 必须以**字母**开头（不能数字打头），全程 kebab-case
+- 形如 `<type>-<topic>`，`type ∈ {feature, fix, refactor, research, docs}`，`topic` 只表达主题，不塞实现细节
+- **不要加日期前缀**——`YYYY-MM-DD-` 是 `/opsx:archive` 阶段才会加上的归档前缀，pre_design 阶段加了会被 CLI 拒绝（`--change` 校验报错）
+
+复用判断（先做这一步）：
+
+- 列出 `openspec/changes/`（排除 `archive/`），找主题、目标、范围都对齐的活跃 change（不是表面相似）
+- 唯一明确匹配 → 复用；多候选 → 停下问用户；无匹配 → 进入"创建"
+
+创建（仅在无可复用 change 时）：
+
+- 必须通过 CLI 创建，不要手动 `mkdir`：
+
+  ```bash
+  openspec new change "<name>" --description "<一句话描述>"
+  ```
+
+- 创建后立即验证骨架：目录下存在 `.openspec.yaml` 与 `README.md`；`openspec status --change "<name>" --json` 能正常返回 artifact 列表（不是 `Invalid change name` 错误）
+
+- 创建失败时常见原因：name 数字打头、含空格 / 大写 / 下划线、目录已存在；按提示修正后重试，不要绕过 CLI
+
+- 把 `pre_design.md` 写入该目录（**不要**手动新建带 `YYYY-MM-DD-` 前缀的目录）
 
 **落盘前向用户预览整体方案并等待确认（硬门）**：
 
@@ -240,7 +259,7 @@ OK 落盘？还是要调整哪一块？
 ## 完成条件
 
 - 已完成需求梳理与路线选择
-- 已确定并创建/复用目标 change，根目录存在 `.openspec.yaml`
+- 已确定并创建/复用目标 change，目录下存在 `.openspec.yaml` 与 `README.md`，且 `openspec status --change "<name>" --json` 返回正常
 - 已写入 `pre_design.md`（4 节 + Next step）
 - 已告知用户文件位置和推荐的下一步 command
 - 在此结束，不自动进入后续流程

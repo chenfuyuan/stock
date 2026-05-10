@@ -42,7 +42,7 @@
 - **THEN** 输出记录 MUST 将 `fund_flow` 置为空，并在 `missing_fields` 中记录 `fund_flow`
 
 ### Requirement: 编排结构化数据抓取并写入 JSON
-系统 SHALL 为每只股票写入 `stock/<date>/data/<code>.json` 原始 JSON，包含股票标识、抓取时间、Tushare 状态、Tushare 记录、akshare 记录和汇总缺失字段，并为下游 Evidence Pack 生成保留可追溯来源信息。
+系统 SHALL 为每只股票写入 `vault/stock/<date>/data/<code>.json` 原始 JSON，包含股票标识、抓取时间、Tushare 状态、Tushare 记录、akshare 记录和汇总缺失字段，并为下游 Evidence Pack 生成保留可追溯来源信息。
 
 #### Scenario: token 存在时组合两类数据源
 - **WHEN** Tushare token 存在且 Tushare 与 akshare mock fetcher 均返回记录

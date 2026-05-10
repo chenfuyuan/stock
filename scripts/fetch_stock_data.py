@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from scripts.build_evidence_pack import write_evidence_pack
-from scripts.config import get_tushare_token
+from scripts.config import get_tushare_token, get_vault_root
 from scripts.fetchers.akshare_fetcher import fetch_akshare_stock_data
 from scripts.fetchers.tushare_fetcher import fetch_tushare_stock_data
 
@@ -19,8 +19,9 @@ def fetch_stock_data(
     akshare_fetcher=None,
 ) -> dict:
     root = Path(root)
-    data_dir = root / "stock" / date / "data"
-    evidence_dir = root / "stock" / date / "evidence"
+    vault = get_vault_root(root)
+    data_dir = vault / "stock" / date / "data"
+    evidence_dir = vault / "stock" / date / "evidence"
     data_dir.mkdir(parents=True, exist_ok=True)
     summary = {"date": date, "written": [], "evidence": []}
 
