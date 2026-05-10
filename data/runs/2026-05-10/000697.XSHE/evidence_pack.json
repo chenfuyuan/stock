@@ -1,0 +1,22 @@
+{
+  "raw_path": "data/runs/2026-05-10/000697.XSHE/structured_data.json",
+  "generated_at": "2026-05-10T06:59:12.354465+00:00",
+  "stock": {
+    "name": "炼石航空",
+    "code": "000697.XSHE"
+  },
+  "data_date": "2026-05-10",
+  "fetched_at": "2026-05-10T03:39:21.060009+00:00",
+  "tushare_status": "skipped:no_token",
+  "missing_fields": [],
+  "tushare": null,
+  "akshare": {
+    "source": "akshare",
+    "code": "000697.XSHE",
+    "data_date": "2026-05-10",
+    "missing_fields": [],
+    "individual_info": [],
+    "hist": [],
+    "fund_flow": []
+  }
+}

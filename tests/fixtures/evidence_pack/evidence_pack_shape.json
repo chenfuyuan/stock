@@ -1,5 +1,5 @@
 {
-  "raw_path": "stock/<YYYY-MM-DD>/data/<code>.json",
+  "raw_path": "data/runs/<YYYY-MM-DD>/<code>/structured_data.json",
   "generated_at": "<UTC ISO 时间戳>",
   "stock": {"name": "<股票名>", "code": "<规范代码>"},
   "data_date": "<YYYY-MM-DD>",

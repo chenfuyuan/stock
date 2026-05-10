@@ -21,16 +21,17 @@ Users usually provide stock names and A-share codes such as `炼石航空(000697
    `python -m scripts.fetch_stock_data --date <YYYY-MM-DD>`
    - Pipe the same parsed JSON list into stdin.
    - Tushare is preferred when `TUSHARE_TOKEN` is available; akshare is always supplemental.
-   - The script writes raw JSON under `vault/stock/<date>/data/<code>.json` and a derived Evidence Pack under `vault/stock/<date>/evidence/<code>.json`. Raw JSON is for audit, recalculation, and necessary deep checks only — do not pipe it into prompts by default.
-   - Evidence Pack regeneration without re-fetching: `python -m scripts.build_evidence_pack --date <YYYY-MM-DD>`.
+   - The script writes this analysis run under `data/runs/<date>/<code>/`: `structured_data.json`, `evidence_pack.json`, and `metadata.json`.
+   - Windowed Tushare/akshare data is regenerated for the current analysis run and may be overwritten within that run; do not maintain or scan long-lived local full-history tables.
    - Structured data is a draft only and never replaces current web research.
-5. Read existing company profiles, daily report files, summary files, and `vault/stock/<date>/evidence/<code>.json` (the default Evidence Pack input). Open `vault/stock/<date>/data/<code>.json` only when an audit, recalculation, or deeper verification is required.
+5. Read existing company profiles, daily report files, summary files, and `data/runs/<date>/<code>/evidence_pack.json` (the default Evidence Pack input). Open `data/runs/<date>/<code>/structured_data.json` only when an audit, recalculation, or deeper verification is required.
 6. Perform current web research for announcements, exchange filings, regulator/government policy, company IR, mainstream financial media, reliable data platforms, and industry context.
 7. Classify every source and current fact before using it in conclusions.
 8. Write each stock daily report with conclusions first and a clear source list.
 9. Conservatively update company profiles only with A/B-level long-lived facts. Put short-term catalysts, uncertain details, and proposed profile changes in the daily report's `建议写入公司档案的信息` section.
 10. Write the daily stock-pool ranking, theme/industry review, research log, and update the daily index page.
-11. Run the quality gates before reporting completion.
+11. Update `vault/index.md` and `vault/log.md` only for relevant analysis actions; update company profiles conservatively and avoid full-vault sweeps.
+12. Run the quality gates before reporting completion.
 
 ## Source grading and fact boundaries
 
@@ -44,7 +45,7 @@ Users usually provide stock names and A-share codes such as `炼石航空(000697
 
 ## Daily stock report structure
 
-Each stock daily report must keep the 14-section structure:
+Each stock daily report must keep the 15-section structure:
 
 1. 投研结论摘要
 2. 关注等级
@@ -53,13 +54,14 @@ Each stock daily report must keep the 14-section structure:
 5. 行情与估值
 6. 财务质量
 7. 资金与筹码
-8. 公告与事件
-9. 行业与政策
-10. 竞争格局
-11. 风险因素
-12. 需继续核验的问题
-13. 来源清单
-14. 建议写入公司档案的信息
+8. 数据依据
+9. 公告与事件
+10. 行业与政策
+11. 竞争格局
+12. 风险因素
+13. 需继续核验的问题
+14. 来源清单
+15. 建议写入公司档案的信息
 
 Use one of five attention levels: `高关注`、`中高关注`、`中性跟踪`、`低关注`、`暂不跟踪`. Explain the level using sourced research, not price targets.
 
@@ -71,9 +73,11 @@ Reports are research opinions only. Do not provide specific buy prices, sell pri
 
 Before completion, verify:
 
-- File completeness: every stock has a company profile and daily report; the daily directory has `index.md`, `股票池排序.md`, `主题行业综述.md`, `研究日志.md`, raw JSON drafts under `data/`, and Evidence Packs under `evidence/`.
-- Source completeness: every current fact has a source grade and data date or retrieval time; every daily report has a source list.
+- File completeness: every stock has a company profile and daily report; the daily directory has `index.md`, `股票池排序.md`, `主题行业综述.md`, `研究日志.md`; each analyzed stock has `data/runs/<date>/<code>/structured_data.json`, `evidence_pack.json`, and `metadata.json`.
+- Source completeness: every current fact has a source grade and data date or retrieval time; every daily report has a source list and `数据依据` section.
 - Conclusion boundary: no core conclusion relies only on C-level or unconfirmed sources.
 - Investment boundary: no specific buy/sell price, take-profit/stop-loss level, or position sizing advice appears in reports or summaries.
 - Obsidian compatibility: YAML frontmatter, tags, wikilinks, backlinks, and conclusion-first headings remain intact.
 - Company profile maintenance: only A/B-level long-lived facts are written into company profiles; uncertain or short-term items remain in daily reports.
+- Data layering: do not write full-market per-stock quotes, full-market money-flow details, minute bars, or tick data into `vault/raw/` or `vault/stock/<date>/`.
+- Collection scope: do not default to all A-share per-stock detail collection; collect target stock pool details or explicitly needed comparison stocks only.

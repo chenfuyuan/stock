@@ -1,0 +1,21 @@
+{
+  "stock": {
+    "name": "炼石航空",
+    "code": "000697.XSHE"
+  },
+  "analysis_date": "2026-05-10",
+  "generated_at": "2026-05-10T03:39:21.060009+00:00",
+  "query_window": {
+    "type": "recent_year",
+    "end_date": "2026-05-10"
+  },
+  "data_sources": [
+    "akshare"
+  ],
+  "files": [
+    "structured_data.json",
+    "evidence_pack.json"
+  ],
+  "missing_fields": [],
+  "tushare_status": "skipped:no_token"
+}

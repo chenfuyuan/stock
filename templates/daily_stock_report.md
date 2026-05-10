@@ -26,6 +26,16 @@ company: "[[{{company_wikilink}}]]"
 
 ## 资金与筹码
 
+## 数据依据
+
+- 结构化接口数据：`data/runs/{{date}}/{{stock_code}}/`
+- run metadata：`data/runs/{{date}}/{{stock_code}}/metadata.json`
+- 数据源：Tushare / akshare / web sources（按实际使用填写）
+- 获取或检索时间：
+- 查询区间：
+- Obsidian 来源页面：
+- 关键统计摘要：
+
 ## 公告与事件
 
 ## 行业与政策

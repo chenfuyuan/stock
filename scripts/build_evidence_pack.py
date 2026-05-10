@@ -4,7 +4,6 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from scripts.config import get_vault_root
 from scripts.windowing import apply_recent_year_window
 
 _FINA_LATEST_PERIODS = 4
@@ -28,12 +27,12 @@ def build_evidence_pack(raw_path: Path | str) -> dict:
     }
 
 
-def write_evidence_pack(raw_path: Path | str, evidence_dir: Path | str) -> Path:
+def write_evidence_pack(raw_path: Path | str, evidence_dir: Path | str, output_name: str | None = None) -> Path:
     raw_path = Path(raw_path)
     evidence_dir = Path(evidence_dir)
     evidence_dir.mkdir(parents=True, exist_ok=True)
     pack = build_evidence_pack(raw_path)
-    out_path = evidence_dir / raw_path.name
+    out_path = evidence_dir / (output_name or raw_path.name)
     out_path.write_text(json.dumps(pack, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
     return out_path
 
@@ -96,12 +95,10 @@ def main() -> None:
     parser.add_argument("--root", default=".")
     args = parser.parse_args()
     root = Path(args.root)
-    vault = get_vault_root(root)
-    raw_dir = vault / "stock" / args.date / "data"
-    evidence_dir = vault / "stock" / args.date / "evidence"
+    run_root = root / "data" / "runs" / args.date
     summary = {"date": args.date, "evidence": []}
-    for raw_path in sorted(raw_dir.glob("*.json")):
-        out_path = write_evidence_pack(raw_path, evidence_dir)
+    for raw_path in sorted(run_root.glob("*/structured_data.json")):
+        out_path = write_evidence_pack(raw_path, raw_path.parent, output_name="evidence_pack.json")
         summary["evidence"].append(str(out_path))
     json.dump(summary, sys.stdout, ensure_ascii=False)
     sys.stdout.write("\n")

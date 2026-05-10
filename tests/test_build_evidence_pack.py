@@ -175,3 +175,24 @@ def test_write_evidence_pack_writes_to_evidence_directory(tmp_path, raw_payload)
     pack = json.loads(text)
     assert pack["raw_path"] == str(raw_path)
     assert pack["tushare"]["fina_indicator_recent"]
+
+
+def test_build_evidence_pack_cli_reads_run_directories(tmp_path, raw_payload):
+    raw_path = tmp_path / "data" / "runs" / "2026-05-10" / "000697.XSHE" / "structured_data.json"
+    raw_path.parent.mkdir(parents=True, exist_ok=True)
+    raw_path.write_text(json.dumps(raw_payload, ensure_ascii=False), encoding="utf-8")
+
+    import subprocess
+    import sys
+
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.build_evidence_pack", "--date", "2026-05-10", "--root", str(tmp_path)],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    summary = json.loads(result.stdout)
+    out_path = tmp_path / "data" / "runs" / "2026-05-10" / "000697.XSHE" / "evidence_pack.json"
+    assert summary["evidence"] == [str(out_path)]
+    assert json.loads(out_path.read_text(encoding="utf-8"))["raw_path"] == str(raw_path)

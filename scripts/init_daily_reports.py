@@ -33,9 +33,7 @@ def init_daily_reports(
     vault = get_vault_root(root)
     companies_dir = vault / "companies"
     daily_dir = vault / "stock" / date
-    data_dir = daily_dir / "data"
     companies_dir.mkdir(parents=True, exist_ok=True)
-    data_dir.mkdir(parents=True, exist_ok=True)
 
     summary = {"date": date, "created": [], "skipped": []}
     _write_static(vault / "index.md", "vault_index.md", {}, summary, root)

@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from scripts.build_evidence_pack import write_evidence_pack
-from scripts.config import get_tushare_token, get_vault_root
+from scripts.config import get_tushare_token
 from scripts.fetchers.akshare_fetcher import fetch_akshare_stock_data
 from scripts.fetchers.tushare_fetcher import fetch_tushare_stock_data
 
@@ -19,11 +19,7 @@ def fetch_stock_data(
     akshare_fetcher=None,
 ) -> dict:
     root = Path(root)
-    vault = get_vault_root(root)
-    data_dir = vault / "stock" / date / "data"
-    evidence_dir = vault / "stock" / date / "evidence"
-    data_dir.mkdir(parents=True, exist_ok=True)
-    summary = {"date": date, "written": [], "evidence": []}
+    summary = {"date": date, "written": [], "evidence": [], "metadata": []}
 
     for stock in stocks:
         tushare_record = None
@@ -55,12 +51,37 @@ def fetch_stock_data(
             "akshare": akshare_record,
             "missing_fields": missing_fields,
         }
-        path = data_dir / f"{stock['code']}.json"
+        run_dir = root / "data" / "runs" / date / stock["code"]
+        run_dir.mkdir(parents=True, exist_ok=True)
+        path = run_dir / "structured_data.json"
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
         summary["written"].append(str(path))
-        evidence_path = write_evidence_pack(path, evidence_dir)
+        evidence_path = write_evidence_pack(path, run_dir, output_name="evidence_pack.json")
         summary["evidence"].append(str(evidence_path))
+        metadata_path = _write_run_metadata(run_dir, stock, date, payload, evidence_path)
+        summary["metadata"].append(str(metadata_path))
     return summary
+
+
+def _write_run_metadata(run_dir: Path, stock: dict[str, str], date: str, payload: dict, evidence_path: Path) -> Path:
+    sources = []
+    if payload.get("tushare"):
+        sources.append("tushare")
+    if payload.get("akshare"):
+        sources.append("akshare")
+    metadata = {
+        "stock": stock,
+        "analysis_date": date,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "query_window": {"type": "recent_year", "end_date": date},
+        "data_sources": sources,
+        "files": ["structured_data.json", evidence_path.name],
+        "missing_fields": list(payload.get("missing_fields") or []),
+        "tushare_status": payload.get("tushare_status"),
+    }
+    path = run_dir / "metadata.json"
+    path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    return path
 
 
 def _default_tushare_fetcher(code: str, date: str, token: str) -> dict:

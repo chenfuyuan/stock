@@ -17,6 +17,8 @@ def test_init_daily_reports_creates_expected_structure(tmp_path):
     summary = init_daily_reports(STOCKS, "2026-05-10", tmp_path)
 
     assert (tmp_path / "vault" / "index.md").exists()
+    assert "[[市场复盘与行情摘要]]" in (tmp_path / "vault" / "index.md").read_text(encoding="utf-8")
+    assert "data/runs/YYYY-MM-DD/<symbol>/" in (tmp_path / "vault" / "index.md").read_text(encoding="utf-8")
     assert (tmp_path / "vault" / "knowledge" / "index.md").exists()
     assert (tmp_path / "vault" / "knowledge" / "themes" / "index.md").exists()
     assert (tmp_path / "vault" / "knowledge" / "events" / "index.md").exists()
@@ -32,7 +34,7 @@ def test_init_daily_reports_creates_expected_structure(tmp_path):
     assert (tmp_path / "vault" / "stock" / "2026-05-10" / "股票池排序.md").exists()
     assert (tmp_path / "vault" / "stock" / "2026-05-10" / "主题行业综述.md").exists()
     assert (tmp_path / "vault" / "stock" / "2026-05-10" / "研究日志.md").exists()
-    assert (tmp_path / "vault" / "stock" / "2026-05-10" / "data").is_dir()
+    assert not (tmp_path / "vault" / "stock" / "2026-05-10" / "data").exists()
     assert summary["created"]
 
 
@@ -152,6 +154,8 @@ def test_daily_report_template_replaces_core_variables_and_has_sections(tmp_path
     assert "{{industry_catalyst_links}}" not in content
     assert "## 投研结论摘要" in content
     assert "## 行业/催化横向比较" in content
+    assert "## 数据依据" in content
+    assert "data/runs/2026-05-10/000697.XSHE/" in content
     assert "## 建议写入公司档案的信息" in content
     assert "[[证据库入口]]" in content
     assert "[[复盘入口]]" in content
